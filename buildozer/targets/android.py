@@ -713,6 +713,7 @@ class TargetAndroid(Target):
                     [
                         "git",
                         "clone",
+                        "--depth", "1",
                         "-b",
                         p4a_branch,
                         "--single-branch",
