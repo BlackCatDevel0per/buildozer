@@ -1,5 +1,7 @@
 # Buildozer
 
+### My fork with some advantages like: git caching, ... & in TODOs refactor somethings..
+
 Buildozer is a development tool for turning  [Python](https://www.python.org/)
 applications into binary packages ready for installation on any of a number of
 platforms, including mobile devices.

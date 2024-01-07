@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 
 # TODO: Use as cli & upload to PyPi?)
+# TODO: Optionally clone git "recipes" using env vars & still one var to default clone all
 
 # TODO: Optional local caching
 CACHE_DIR = Path(Path.home(), ".buildozer/cache/git")
@@ -77,9 +78,9 @@ def parse_git() -> Tuple[List[str], Path, Path, bool]:
 		orig_path = Path(_des_dirname_from_repo)
 		cached_path = Path(CACHE_DIR, _des_dirname_from_repo)
 
-	hash_value = sha1(repo.encode()).hexdigest()
+	url_hash = sha1(repo.encode()).hexdigest()
 
-	des2cache = Path(cached_path.parent, Path(f"{cached_path.stem}_{hash_value}"))
+	des2cache = Path(cached_path.parent, Path(f"{cached_path.stem}_{url_hash}"))
 
 	# FIXME: Crutchy~
 	if orig_path.stem == other_args_[-1]:
