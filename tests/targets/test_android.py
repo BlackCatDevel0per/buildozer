@@ -8,6 +8,7 @@ import sys
 import pytest
 
 from buildozer.targets.android import TargetAndroid
+from buildozer.scripts.cachetools import select_git
 from tests.targets.utils import (
     init_buildozer,
     patch_buildops_checkbin,
@@ -158,7 +159,7 @@ class TestTargetAndroid:
         with patch_buildops_checkbin() as m_checkbin:
             target_android.check_requirements()
         assert m_checkbin.call_args_list == [
-            mock.call("Git (git)", "git"),
+            mock.call("Git (git)", select_git(allow_cache=True)),
             mock.call("Cython (cython)", "cython"),
             mock.call("Java compiler (javac)", "javac"),
             mock.call("Java keytool (keytool)", "keytool"),
@@ -438,7 +439,7 @@ class TestTargetAndroid:
             target_android._install_p4a()
 
         assert mock.call(
-            ["git", "clone", "-b", "master", "--single-branch", "https://custom-p4a-url/p4a.git", "python-for-android"],
+            [select_git(allow_cache=True), "clone", "-b", "master", "--single-branch", "https://custom-p4a-url/p4a.git", "python-for-android"],
             cwd=mock.ANY,
             env=mock.ANY) in m_cmd.call_args_list
 
@@ -453,7 +454,7 @@ class TestTargetAndroid:
             target_android._install_p4a()
 
         assert mock.call(
-            ["git", "clone", "-b", "master", "--single-branch", "https://github.com/fork/python-for-android.git", "python-for-android"],
+            [select_git(allow_cache=True), "clone", "-b", "master", "--single-branch", "https://github.com/fork/python-for-android.git", "python-for-android"],
             cwd=mock.ANY,
             env=mock.ANY) in m_cmd.call_args_list
 
@@ -466,7 +467,7 @@ class TestTargetAndroid:
             target_android._install_p4a()
 
         assert mock.call(
-            ["git", "clone", "-b", "master", "--single-branch", "https://github.com/kivy/python-for-android.git", "python-for-android"],
+            [select_git(allow_cache=True), "clone", "-b", "master", "--single-branch", "https://github.com/kivy/python-for-android.git", "python-for-android"],
             cwd=mock.ANY,
             env=mock.ANY) in m_cmd.call_args_list
 

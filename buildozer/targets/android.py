@@ -39,6 +39,7 @@ import pexpect
 import buildozer.buildops as buildops
 from buildozer.exceptions import BuildozerException
 from buildozer.logger import USE_COLOR
+from buildozer.scripts.cachetools import select_git
 from buildozer.target import Target
 from buildozer.libs.version import parse
 
@@ -691,13 +692,13 @@ class TargetAndroid(Target):
             # check that url/branch has not been changed
             if buildops.file_exists(p4a_dir):
                 cur_url = buildops.cmd(
-                    ["git", "config", "--get", "remote.origin.url"],
+                    [select_git(), "config", "--get", "remote.origin.url"],
                     get_stdout=True,
                     cwd=p4a_dir,
                     env=self.buildozer.environ
                 ).stdout.strip()
                 cur_branch = buildops.cmd(
-                    ["git", "branch", "-vv"],
+                    [select_git(), "branch", "-vv"],
                     get_stdout=True,
                     cwd=p4a_dir,
                     env=self.buildozer.environ
@@ -711,7 +712,7 @@ class TargetAndroid(Target):
             if not buildops.file_exists(p4a_dir):
                 buildops.cmd(
                     [
-                        "git",
+                        select_git(allow_cache=True),
                         "clone",
                         "--depth", "1",
                         "-b",
@@ -725,31 +726,31 @@ class TargetAndroid(Target):
                 )
             elif self.platform_update:
                 buildops.cmd(
-                    ["git", "clean", "-dxf"],
+                    [select_git(), "clean", "-dxf"],
                     cwd=p4a_dir,
                     env=self.buildozer.environ)
                 current_branch = buildops.cmd(
-                    ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+                    [select_git(), "rev-parse", "--abbrev-ref", "HEAD"],
                     get_stdout=True,
                     cwd=p4a_dir,
                     env=self.buildozer.environ).stdout.strip()
                 if current_branch == p4a_branch:
                     buildops.cmd(
-                        ["git", "pull"],
+                        [select_git(), "pull"],
                         cwd=p4a_dir,
                         env=self.buildozer.environ)
                 else:
                     buildops.cmd(
-                        ["git", "fetch", "--tags", "origin", "{0}:{0}".format(p4a_branch)],
+                        [select_git(), "fetch", "--tags", "origin", "{0}:{0}".format(p4a_branch)],
                         cwd=p4a_dir,
                         env=self.buildozer.environ)
                     buildops.cmd(
-                        ["git", "checkout", p4a_branch],
+                        [select_git(), "checkout", p4a_branch],
                         cwd=p4a_dir,
                         env=self.buildozer.environ)
             if p4a_commit != 'HEAD':
                 buildops.cmd(
-                    ["git", "reset", "--hard", p4a_commit],
+                    [select_git(), "reset", "--hard", p4a_commit],
                     cwd=p4a_dir,
                     env=self.buildozer.environ)
 

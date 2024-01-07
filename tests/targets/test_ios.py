@@ -6,6 +6,7 @@ from unittest import mock
 import pytest
 
 from buildozer.buildops import CommandResult
+from buildozer.scripts.cachetools import select_git
 from buildozer.exceptions import BuildozerCommandException
 from buildozer.targets.ios import TargetIos
 from tests.targets.utils import (
@@ -60,7 +61,7 @@ class TestTargetIos:
         assert m_checkbin.call_args_list == [
             mock.call("Xcode xcodebuild", "xcodebuild"),
             mock.call("Xcode xcode-select", "xcode-select"),
-            mock.call("Git git", "git"),
+            mock.call("Git git", select_git(allow_cache=True)),
             mock.call("Cython cython", "cython"),
             mock.call("pkg-config", "pkg-config"),
             mock.call("autoconf", "autoconf"),
@@ -116,8 +117,9 @@ class TestTargetIos:
         assert m_cmd.call_args_list == [
             mock.call(
                 [
-                    "git",
+                    select_git(allow_cache=True),
                     "clone",
+                    "--depth", "1",
                     "--branch",
                     "master",
                     "https://github.com/kivy/kivy-ios",
@@ -127,8 +129,9 @@ class TestTargetIos:
             ),
             mock.call(
                 [
-                    "git",
+                    select_git(allow_cache=True),
                     "clone",
+                    "--depth", "1",
                     "--branch",
                     "1.12.2",
                     "https://github.com/phonegap/ios-deploy",

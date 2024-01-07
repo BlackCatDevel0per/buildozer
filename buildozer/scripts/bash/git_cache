@@ -1,0 +1,8 @@
+#!/bin/bash
+
+gitc_path=$(dirname $0)
+gitc_path_dirname=$(dirname $0 | cut -f1 -d'/')
+gitc_path="${gitc_path%/$gitc_path_dirname*}"
+
+# little workaround (runs using system python) & crutchy~
+python3 $gitc_path/git_cache.py $@

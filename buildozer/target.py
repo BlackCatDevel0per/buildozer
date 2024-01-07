@@ -1,6 +1,7 @@
 from sys import exit
 import os
 from os.path import join
+from buildozer.scripts.cachetools import select_git
 
 import buildozer.buildops as buildops
 from buildozer.logger import Logger
@@ -254,7 +255,14 @@ class Target:
                 buildops.file_copytree(custom_dir, install_dir)
             else:
                 buildops.cmd(
-                    ["git", "clone", "--branch", clone_branch, clone_url],
+                    [
+                        select_git(allow_cache=True),
+                        "clone",
+                        "--depth", "1",
+                        "--branch",
+                        clone_branch,
+                        clone_url,
+                    ],
                     cwd=self.buildozer.platform_dir,
                     env=self.buildozer.environ)
         elif self.platform_update:
@@ -262,11 +270,11 @@ class Target:
                 buildops.file_copytree(custom_dir, install_dir)
             else:
                 buildops.cmd(
-                    ["git", "clean", "-dxf"],
+                    [select_git(), "clean", "-dxf"],
                     cwd=install_dir,
                     env=self.buildozer.environ)
                 buildops.cmd(
-                    ["git", "pull", "origin", clone_branch],
+                    [select_git(), "pull", "origin", clone_branch],
                     cwd=install_dir,
                     env=self.buildozer.environ)
         return install_dir
